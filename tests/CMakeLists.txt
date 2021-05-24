@@ -41,11 +41,12 @@ add_custom_command(
     "${CMAKE_CURRENT_BINARY_DIR}/${asm_obj_file}"
     "${CMAKE_CURRENT_SOURCE_DIR}/${asm_file}"
   MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${asm_file}"
-)
+  )
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -ggdb")
 
 add_executable(subhook_test_exe
   test.c
-  "${CMAKE_CURRENT_BINARY_DIR}/${asm_obj_file}"
 )
 set_target_properties(subhook_test_exe PROPERTIES OUTPUT_NAME test)
 
@@ -68,6 +69,7 @@ foreach(target subhook_test_exe subhook_cxx_test_exe)
     endif()
   endif()
 
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -ggdb")
   target_link_libraries(${target} subhook)
 
   if(MSVC)

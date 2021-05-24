@@ -26,6 +26,7 @@
 
 #include "subhook.h"
 #include "subhook_private.h"
+#include <stdio.h>
 
 subhook_disasm_handler_t subhook_disasm_handler = NULL;
 
@@ -47,6 +48,7 @@ SUBHOOK_EXPORT void *SUBHOOK_API subhook_get_trampoline(subhook_t hook) {
   if (hook == NULL) {
     return NULL;
   }
+  printf("subhook_get_trampoline:  returning hook->trampoline %p\n", hook->trampoline);
   return hook->trampoline;
 }
 

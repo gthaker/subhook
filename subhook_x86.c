@@ -29,6 +29,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "subhook.h"
 #include "subhook_private.h"
@@ -464,6 +465,7 @@ SUBHOOK_EXPORT subhook_t SUBHOOK_API subhook_new(void *src,
   subhook_t hook;
   int error;
 
+  printf("============== enter subhook_new ======\n");
   hook = calloc(1, sizeof(*hook));
   if (hook == NULL) {
     return NULL;
@@ -488,12 +490,14 @@ SUBHOOK_EXPORT subhook_t SUBHOOK_API subhook_new(void *src,
   }
 
   hook->trampoline = subhook_alloc_code(hook->trampoline_size);
+  printf("subhook_new:  hook->trampoline %p\n", hook->trampoline);
   if (hook->trampoline != NULL) {
     error = subhook_make_trampoline(hook->trampoline,
                                     hook->src,
                                     hook->jmp_size,
                                     &hook->trampoline_len,
                                     hook->flags);
+    printf("subhook_new:  error %d\n", error);
     if (error != 0) {
       subhook_free_code(hook->trampoline, hook->trampoline_size);
       hook->trampoline = NULL;
@@ -502,9 +506,11 @@ SUBHOOK_EXPORT subhook_t SUBHOOK_API subhook_new(void *src,
     }
   }
 
+  printf("=======================================\n");
   return hook;
 
 error_exit:
+  printf("=========== error_exit  ==================\n");
   subhook_free_code(hook->trampoline, hook->trampoline_size);
   free(hook->code);
   free(hook);
@@ -525,19 +531,24 @@ SUBHOOK_EXPORT void SUBHOOK_API subhook_free(subhook_t hook) {
 SUBHOOK_EXPORT int SUBHOOK_API subhook_install(subhook_t hook) {
   int error;
 
+  printf("=========== enter subhook_install ==============\n");
   if (hook == NULL) {
+    printf("=========== exit subhook_install - return -EINVAL   ==========\n");
     return -EINVAL;
   }
   if (hook->installed) {
+    printf("=========== exit subhook_install - return -EINVAL   ==========\n");
     return -EINVAL;
   }
 
   error = subhook_make_jmp(hook->src, hook->dst, hook->flags);
   if (error >= 0) {
     hook->installed = true;
+    printf("=========== exit subhook_install - SUCCESSFUL ==========\n");
     return 0;
   }
 
+  printf("=========== exit subhook_install - error %d ==========\n", error);
   return error;
 }
 
