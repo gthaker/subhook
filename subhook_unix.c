@@ -83,6 +83,7 @@ void *subhook_alloc_code(void* src_addr, size_t size, subhook_flags_t flags) {
                      -1,
                      0);
       if (address != MAP_FAILED) {
+        printf("subhook_alloc_code:1 src_addr %p  address %p   diff %ld\n", src_addr, address, address-src_addr);
         return address;
       }
     }
@@ -98,6 +99,7 @@ void *subhook_alloc_code(void* src_addr, size_t size, subhook_flags_t flags) {
                  MAP_PRIVATE | MAP_ANONYMOUS,
                  -1,
                  0);
+  printf("subhook_alloc_code:2 src_addr %p  address %p   diff %ld\n", src_addr, address, address-src_addr);
   return address == MAP_FAILED ? NULL : address;
 }
 
